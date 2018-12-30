@@ -43,15 +43,15 @@
       });
 
       $('#channel').change(function () {
-        localStorage["webhooks"] = $(this).val();
+        localStorage["channel"] = $(this).val();
       });
 
       $('#channel').keyup(function () {
-        localStorage["webhooks"] = $(this).val();
+        localStorage["channel"] = $(this).val();
       });
 
-      if (localStorage["webhooks"]) {
-        $("#channel").val( localStorage["webhooks"]);
+      if (localStorage["channel"]) {
+        $("#channel").val( localStorage["channel"]);
       }
 
       $('.post').click(function () {

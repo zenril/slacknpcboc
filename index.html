@@ -29,7 +29,7 @@
 
     window.onload = function () {
 
-      $("#channel").val("#celestial");
+      $("#channel").val("#npcs");
       $("#name").val("angel bot");
       $("#emoji").val(":angel:");
 
@@ -42,17 +42,17 @@
         $('#name').val($(this).text());
       });
 
-      // $('#url').change(function () {
-      //   localStorage["webhooks"] = $(this).val();
-      // });
+      $('#channel').change(function () {
+        localStorage["webhooks"] = $(this).val();
+      });
 
-      // $('#url').keyup(function () {
-      //   localStorage["webhooks"] = $(this).val();
-      // });
+      $('#channel').keyup(function () {
+        localStorage["webhooks"] = $(this).val();
+      });
 
-      // if (localStorage["webhooks"]) {
-      //   $("#url").val( localStorage["webhooks"]);
-      // }
+      if (localStorage["webhooks"]) {
+        $("#channel").val( localStorage["webhooks"]);
+      }
 
       $('.post').click(function () {
 
@@ -62,7 +62,7 @@
             "username": $("#name").val(),
             "text": $("#input").val(),
             "icon_emoji": $("#emoji").val(),
-            "link_names": true,
+            "link_names": true
           }),
           function (a) {
             if (a == 'ok') {

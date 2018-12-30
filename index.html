@@ -19,6 +19,12 @@
       width: 100%;
       min-height: 100px;
     }
+
+    .dropdown-menu{
+          max-height:400px;
+          overflow-y:auto;
+       }
+    
   </style>
 
 
@@ -34,6 +40,10 @@
       $("#emoji").val(":angel:");
 
       $('.insertname a').click(function () {
+        $('textarea')[0].insertAtCaret($(this).data('value'));
+      });
+
+      $('.addemoji a').click(function () {
         $('textarea')[0].insertAtCaret($(this).data('value'));
       });
 
@@ -134,17 +144,32 @@
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">Icon / NPC</button>
                 <div class="dropdown-menu insertemoji" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-                  <a class="dropdown-item" data-value=":melion2:" href="#">Melion</a>
+                  <a class="dropdown-item" data-value=":1d20crit:" href="#">The Pantheon</a>
+                  <a class="dropdown-item" data-value=":setahkaltra:" href="#">Setahkaltra</a>
+                  <a class="dropdown-item" data-value=":ehvonuir:" href="#">Ehvonuir</a>
                   <a class="dropdown-item" data-value=":mhenja:" href="#">Mhenja</a>
-                  <a class="dropdown-item" data-value=":sutisitus:" href="#">Sutixitus</a>
+                  <a class="dropdown-item" data-value=":cov:" href="#">Cov</a>
+                  <a class="dropdown-item" data-value=":ahleeran:" href="#">Ahleeran</a>
+                  <a class="dropdown-item" data-value=":ryhlyrvn:" href="#">Ryhlyrvn</a>
+                  <a class="dropdown-item" data-value=":belanon:" href="#">Belanon</a>
+                  <a class="dropdown-item" data-value=":mongiaron:" href="#">Mongiaron</a>
+                  <a class="dropdown-item" data-value=":cass:" href="#">Cass</a>
+                  <a class="dropdown-item" data-value=":sesteeri:" href="#">Esteeri</a>
+                  <a class="dropdown-item" data-value=":gitilak:" href="#">Gitilak</a>
+                  <a class="dropdown-item" data-value=":sutixitus:" href="#">Sutixitus</a>
+                  <div class="dropdown-divider"></div>
                   <a class="dropdown-item" data-value=":vhihithrial:" href="#">Vhihithrial</a>
-                  <a class="dropdown-item" data-value=":spies:" href="#">Spies</a>
+                  <a class="dropdown-item" data-value=":melion2:" href="#">Melion</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":1d6:" href="#">The Devils</a>
                   <a class="dropdown-item" data-value=":thedie:" href="#">The Die</a>
                   <a class="dropdown-item" data-value=":thebell:" href="#">The Bell</a>
                   <a class="dropdown-item" data-value=":thetorch:" href="#">The Torch</a>
                   <a class="dropdown-item" data-value=":thequill:" href="#">The Quill</a>
                   <a class="dropdown-item" data-value=":thelock:" href="#">The Lock</a>
                   <a class="dropdown-item" data-value=":thecrown:" href="#">The Crown</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":spies:" href="#">Spies</a>
                 </div>
               </div>
 
@@ -179,6 +204,44 @@
                 </div>
               </div>
             </div>
+            <div class="col pl-0 pr-0">
+
+                <div class="dropdown ">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Insert emoji
+                  </button>
+                  <div class="dropdown-menu addemoji" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" data-value=":1d20crit:" href="#">The Pantheon</a>
+                      <a class="dropdown-item" data-value=":setahkaltra:" href="#">Setahkaltra</a>
+                      <a class="dropdown-item" data-value=":ehvonuir:" href="#">Ehvonuir</a>
+                      <a class="dropdown-item" data-value=":mhenja:" href="#">Mhenja</a>
+                      <a class="dropdown-item" data-value=":cov:" href="#">Cov</a>
+                      <a class="dropdown-item" data-value=":ahleeran:" href="#">Ahleeran</a>
+                      <a class="dropdown-item" data-value=":ryhlyrvn:" href="#">Ryhlyrvn</a>
+                      <a class="dropdown-item" data-value=":belanon:" href="#">Belanon</a>
+                      <a class="dropdown-item" data-value=":mongiaron:" href="#">Mongiaron</a>
+                      <a class="dropdown-item" data-value=":cass:" href="#">Cass</a>
+                      <a class="dropdown-item" data-value=":sesteeri:" href="#">Esteeri</a>
+                      <a class="dropdown-item" data-value=":gitilak:" href="#">Gitilak</a>
+                      <a class="dropdown-item" data-value=":sutixitus:" href="#">Sutixitus</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" data-value=":vhihithrial:" href="#">Vhihithrial</a>
+                      <a class="dropdown-item" data-value=":melion2:" href="#">Melion</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" data-value=":1d6:" href="#">The Devils</a>
+                      <a class="dropdown-item" data-value=":thedie:" href="#">The Die</a>
+                      <a class="dropdown-item" data-value=":thebell:" href="#">The Bell</a>
+                      <a class="dropdown-item" data-value=":thetorch:" href="#">The Torch</a>
+                      <a class="dropdown-item" data-value=":thequill:" href="#">The Quill</a>
+                      <a class="dropdown-item" data-value=":thelock:" href="#">The Lock</a>
+                      <a class="dropdown-item" data-value=":thecrown:" href="#">The Crown</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" data-value=":spies:" href="#">Spies</a>
+                  </div>
+                </div>
+              </div>
+
             <div class="col pl-0 pr-0">
 
               <button class="post btn btn-primary float-right ">

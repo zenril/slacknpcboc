@@ -1,0 +1,356 @@
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
+
+  <style id="compiled-css" type="text/css">
+    textarea {
+      width: 100%;
+      min-height: 100px;
+    }
+
+    .dropdown-menu {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+
+
+  <!-- TODO: Missing CoffeeScript 2 -->
+
+  <textarea id="template" style="display:none">
+    <div  class="card w-75">
+        <div class="card-body">
+          <h5 class="card-title">{{name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{emoji}}</h6>
+          <p class="card-text">{{text}}</p>
+          <a href="#" data-i="{{i}}" class="delete btn btn-primary">delete</a>
+        </div>
+    </div>
+  </textarea>
+
+
+  <script type="text/javascript">
+
+    var conversation = [];
+
+
+    window.onload = function () {
+      var template = $("#template").val();
+    function getTemplate(data, i) {
+      return template.replace("{{name}}", data.username)
+        .replace("{{text}}", data.text)
+        .replace("{{emoji}}", data.icon_emoji).replace("{{i}}", i);
+    }
+      $("#channel").val("#npcs");
+      $("#name").val("angel bot");
+      $("#emoji").val(":angel:");
+      $("#delay").val("1.4");
+
+
+      $('.insertname a').click(function () {
+        $('textarea')[0].insertAtCaret($(this).data('value'));
+      });
+
+      $('.addemoji a').click(function () {
+        $('textarea')[0].insertAtCaret($(this).data('value'));
+      });
+
+      $('.insertemoji a').click(function () {
+        $('#emoji').val($(this).data('value'));
+        $('#name').val($(this).text());
+      });
+
+      $('#channel').change(function () {
+        localStorage["channel"] = $(this).val();
+      });
+
+      $('#channel').keyup(function () {
+        localStorage["channel"] = $(this).val();
+      });
+
+      if (localStorage["channel"]) {
+        $("#channel").val(localStorage["channel"]);
+      }
+
+      $('#renderer').on('click', '.card' ,function () {
+        var data = $(this).data('model');
+        if(data){
+          $("#name").val(data.data.username);
+          $("#emoji").val(data.data.icon_emoji);
+        }
+      });
+
+      $('#renderer').on('click', '.delete' ,function () {
+         conversation.splice(0 + $(this).data('i'), 1);
+         render();
+      });
+
+
+      $('.addrow').click(function () {
+        
+        conversation.unshift({
+          data: {
+            "channel": $("#channel").val(),
+            "username": $("#name").val(),
+            "text": $("#input").val(),
+            "icon_emoji": $("#emoji").val(),
+            "link_names": true
+          },
+          delay: $("#delay").val() * 1000
+        });
+        render();
+        $('textarea').val("");
+
+      });
+
+      $('.post').click(function () {
+
+        sendNext();
+
+      });
+
+      function render(){
+        $("#renderer").html("");
+        for (var i = 0; i < conversation.length; i++) {
+          var element = conversation[i];
+          var temp = getTemplate(element.data, i);
+          var html = $(temp);
+          html.data('model', element);
+          $("#renderer").append(html);
+        }
+      }
+
+      function sendNext() {
+
+        var next = conversation[conversation.length - 1];
+
+        setTimeout(function () {
+          var a = conversation[conversation.length - 1];
+
+          $.post("https://hooks.slack.com/services/" + findGetParameter('token'),
+            JSON.stringify(a.data),
+            function (a) {
+              if (a == 'ok') {
+                conversation.pop();
+                render();
+                sendNext();
+              } else {
+
+              }
+            });
+        }, next.delay);
+      }
+
+
+      HTMLTextAreaElement.prototype.insertAtCaret = function (text) {
+        text = text || '';
+        if (document.selection) {
+          // IE
+          this.focus();
+          var sel = document.selection.createRange();
+          sel.text = text;
+        } else if (this.selectionStart || this.selectionStart === 0) {
+          // Others
+          var startPos = this.selectionStart;
+          var endPos = this.selectionEnd;
+          this.value = this.value.substring(0, startPos) +
+            text +
+            this.value.substring(endPos, this.value.length);
+          this.selectionStart = startPos + text.length;
+          this.selectionEnd = startPos + text.length;
+        } else {
+          this.value += text;
+        }
+      };
+
+      function findGetParameter(parameterName) {
+        var result = null,
+          tmp = [];
+        var items = location.search.substr(1).split("&");
+        for (var index = 0; index < items.length; index++) {
+          tmp = items[index].split("=");
+          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        }
+        return result;
+      }
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <div class="container  mt-3">
+    <div class="row  ">
+      <div class="col-sm  ">
+        <!-- <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">auth url</span>
+          </div>
+          <input type="text" class="form-control" placeholder="webhooks url" id="url">
+        </div> -->
+
+        <div class="row">
+            <div class="col-sm">
+              <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">channel</span>
+                </div>
+                <input type="text" class="form-control" placeholder="#general" id="channel">
+              </div>
+            </div>
+            <div class="col-sm">
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">delay</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="1.5" id="delay">
+                  </div>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm">
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">Icon / NPC</button>
+                <div class="dropdown-menu insertemoji" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+                  <a class="dropdown-item" data-value=":1d20crit:" href="#">The Pantheon</a>
+                  <a class="dropdown-item" data-value=":setahkaltra:" href="#">Setahkaltra</a>
+                  <a class="dropdown-item" data-value=":ehvonuir:" href="#">Ehvonuir</a>
+                  <a class="dropdown-item" data-value=":mhenja:" href="#">Mhenja</a>
+                  <a class="dropdown-item" data-value=":cov:" href="#">Cov</a>
+                  <a class="dropdown-item" data-value=":ahleeran:" href="#">Ahleeran</a>
+                  <a class="dropdown-item" data-value=":ryhlyrvn:" href="#">Ryhlyrvn</a>
+                  <a class="dropdown-item" data-value=":belanon:" href="#">Belanon</a>
+                  <a class="dropdown-item" data-value=":mongiaron:" href="#">Mongiaron</a>
+                  <a class="dropdown-item" data-value=":cass:" href="#">Cass</a>
+                  <a class="dropdown-item" data-value=":sesteeri:" href="#">Esteeri</a>
+                  <a class="dropdown-item" data-value=":gitilak:" href="#">Gitilak</a>
+                  <a class="dropdown-item" data-value=":sutixitus:" href="#">Sutixitus</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":vhihithrial:" href="#">Vhihithrial</a>
+                  <a class="dropdown-item" data-value=":melion2:" href="#">Melion</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":1d6:" href="#">The Devils</a>
+                  <a class="dropdown-item" data-value=":thedie:" href="#">The Die</a>
+                  <a class="dropdown-item" data-value=":thebell:" href="#">The Bell</a>
+                  <a class="dropdown-item" data-value=":thetorch:" href="#">The Torch</a>
+                  <a class="dropdown-item" data-value=":thequill:" href="#">The Quill</a>
+                  <a class="dropdown-item" data-value=":thelock:" href="#">The Lock</a>
+                  <a class="dropdown-item" data-value=":thecrown:" href="#">The Crown</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":spies:" href="#">Spies</a>
+                </div>
+              </div>
+
+              <input type="text" class="form-control" placeholder=":angel:" id="emoji">
+            </div>
+          </div>
+          <div class="col-sm">
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Display Name</span>
+              </div>
+              <input type="text" class="form-control" placeholder="angel" id="name">
+            </div>
+          </div>
+        </div>
+
+        <div class="container  mb-2 mt-2 ">
+          <div class="row">
+            <div class="col pl-0 pr-0">
+
+              <div class="dropdown ">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  Insert name
+                </button>
+                <div class="dropdown-menu insertname" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" data-value="<@UBKKWRF1S>" href="#">Scott</a>
+                  <a class="dropdown-item" data-value="<@UBK6EUGE4>" href="#">Jess</a>
+                  <a class="dropdown-item" data-value="<@UBKB1NKH7>" href="#">Isaac</a>
+                  <a class="dropdown-item" data-value="<@UBKKVGSCC>" href="#">Aaron</a>
+                  <a class="dropdown-item" data-value="<@UBM3CR3JR>" href="#">Matthew</a>
+                </div>
+              </div>
+            </div>
+            <div class="col pl-0 pr-0">
+
+              <div class="dropdown ">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  Insert emoji
+                </button>
+                <div class="dropdown-menu addemoji" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" data-value=":1d20crit:" href="#">The Pantheon</a>
+                  <a class="dropdown-item" data-value=":setahkaltra:" href="#">Setahkaltra</a>
+                  <a class="dropdown-item" data-value=":ehvonuir:" href="#">Ehvonuir</a>
+                  <a class="dropdown-item" data-value=":mhenja:" href="#">Mhenja</a>
+                  <a class="dropdown-item" data-value=":cov:" href="#">Cov</a>
+                  <a class="dropdown-item" data-value=":ahleeran:" href="#">Ahleeran</a>
+                  <a class="dropdown-item" data-value=":ryhlyrvn:" href="#">Ryhlyrvn</a>
+                  <a class="dropdown-item" data-value=":belanon:" href="#">Belanon</a>
+                  <a class="dropdown-item" data-value=":mongiaron:" href="#">Mongiaron</a>
+                  <a class="dropdown-item" data-value=":cass:" href="#">Cass</a>
+                  <a class="dropdown-item" data-value=":sesteeri:" href="#">Esteeri</a>
+                  <a class="dropdown-item" data-value=":gitilak:" href="#">Gitilak</a>
+                  <a class="dropdown-item" data-value=":sutixitus:" href="#">Sutixitus</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":vhihithrial:" href="#">Vhihithrial</a>
+                  <a class="dropdown-item" data-value=":melion2:" href="#">Melion</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":1d6:" href="#">The Devils</a>
+                  <a class="dropdown-item" data-value=":thedie:" href="#">The Die</a>
+                  <a class="dropdown-item" data-value=":thebell:" href="#">The Bell</a>
+                  <a class="dropdown-item" data-value=":thetorch:" href="#">The Torch</a>
+                  <a class="dropdown-item" data-value=":thequill:" href="#">The Quill</a>
+                  <a class="dropdown-item" data-value=":thelock:" href="#">The Lock</a>
+                  <a class="dropdown-item" data-value=":thecrown:" href="#">The Crown</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-value=":spies:" href="#">Spies</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col pl-0 pr-0">
+
+              <button class="addrow btn btn-primary float-right ">
+                add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <textarea id="input" class="form-control"></textarea>
+        <button class="post btn btn-primary mb-2 mt-2">
+          post
+        </button>
+      </div>
+
+      <div id='renderer' class="col-sm  ">
+          asd
+      </div>
+
+    </div>
+
+
+
+   
+  </div>
+</body>
+
+</html>

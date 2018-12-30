@@ -1,0 +1,201 @@
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
+
+  <style id="compiled-css" type="text/css">
+    textarea {
+      width: 100%;
+      min-height: 100px;
+    }
+  </style>
+
+
+  <!-- TODO: Missing CoffeeScript 2 -->
+
+  <script type="text/javascript">
+
+
+    window.onload = function () {
+
+      $("#channel").val("#celestial");
+      $("#name").val("angel bot");
+      $("#emoji").val(":angel:");
+
+      $('.insertname a').click(function () {
+        $('textarea')[0].insertAtCaret($(this).data('value'));
+      });
+
+      $('.insertemoji a').click(function () {
+        $('#emoji').val($(this).data('value'));
+        $('#name').val($(this).text());
+      });
+
+      // $('#url').change(function () {
+      //   localStorage["webhooks"] = $(this).val();
+      // });
+
+      // $('#url').keyup(function () {
+      //   localStorage["webhooks"] = $(this).val();
+      // });
+
+      // if (localStorage["webhooks"]) {
+      //   $("#url").val( localStorage["webhooks"]);
+      // }
+
+      $('.post').click(function () {
+
+        $.post("https://hooks.slack.com/services/" + findGetParameter('token'),
+          JSON.stringify({
+            "channel": $("#channel").val(),
+            "username": $("#name").val(),
+            "text": $("#input").val(),
+            "icon_emoji": $("#emoji").val(),
+            "link_names": true,
+          }),
+          function (a) {
+            if (a == 'ok') {
+              $('textarea').val('');
+            }
+          })
+      });
+
+      HTMLTextAreaElement.prototype.insertAtCaret = function (text) {
+        text = text || '';
+        if (document.selection) {
+          // IE
+          this.focus();
+          var sel = document.selection.createRange();
+          sel.text = text;
+        } else if (this.selectionStart || this.selectionStart === 0) {
+          // Others
+          var startPos = this.selectionStart;
+          var endPos = this.selectionEnd;
+          this.value = this.value.substring(0, startPos) +
+            text +
+            this.value.substring(endPos, this.value.length);
+          this.selectionStart = startPos + text.length;
+          this.selectionEnd = startPos + text.length;
+        } else {
+          this.value += text;
+        }
+      };
+
+      function findGetParameter(parameterName) {
+        var result = null,
+          tmp = [];
+        var items = location.search.substr(1).split("&");
+        for (var index = 0; index < items.length; index++) {
+          tmp = items[index].split("=");
+          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        }
+        return result;
+      }
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <div class="container  mt-3">
+    <div class="row  ">
+      <div class="col-sm  ">
+        <!-- <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">auth url</span>
+          </div>
+          <input type="text" class="form-control" placeholder="webhooks url" id="url">
+        </div> -->
+
+
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">channel</span>
+          </div>
+          <input type="text" class="form-control" placeholder="#general" id="channel">
+        </div>
+
+        <div class="row">
+          <div class="col-sm">
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">Icon / NPC</button>
+                <div class="dropdown-menu insertemoji" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+                  <a class="dropdown-item" data-value=":melion2:" href="#">Melion</a>
+                  <a class="dropdown-item" data-value=":mhenja:" href="#">Mhenja</a>
+                  <a class="dropdown-item" data-value=":sutisitus:" href="#">Sutixitus</a>
+                  <a class="dropdown-item" data-value=":vhihithrial:" href="#">Vhihithrial</a>
+                  <a class="dropdown-item" data-value=":spies:" href="#">Spies</a>
+                  <a class="dropdown-item" data-value=":thedie:" href="#">The Die</a>
+                  <a class="dropdown-item" data-value=":thebell:" href="#">The Bell</a>
+                  <a class="dropdown-item" data-value=":thetorch:" href="#">The Torch</a>
+                  <a class="dropdown-item" data-value=":thequill:" href="#">The Quill</a>
+                  <a class="dropdown-item" data-value=":thelock:" href="#">The Lock</a>
+                  <a class="dropdown-item" data-value=":thecrown:" href="#">The Crown</a>
+                </div>
+              </div>
+
+              <input type="text" class="form-control" placeholder=":angel:" id="emoji">
+            </div>
+          </div>
+          <div class="col-sm">
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Display Name</span>
+              </div>
+              <input type="text" class="form-control" placeholder="angel" id="name">
+            </div>
+          </div>
+        </div>
+
+        <div class="container  mb-2 mt-2 ">
+          <div class="row">
+            <div class="col pl-0 pr-0">
+
+              <div class="dropdown ">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  Insert name
+                </button>
+                <div class="dropdown-menu insertname" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" data-value="<@UBKKWRF1S>" href="#">Scott</a>
+                  <a class="dropdown-item" data-value="<@UBK6EUGE4>" href="#">Jess</a>
+                  <a class="dropdown-item" data-value="<@UBKB1NKH7>" href="#">Isaac</a>
+                  <a class="dropdown-item" data-value="<@UBKKVGSCC>" href="#">Aaron</a>
+                  <a class="dropdown-item" data-value="<@UBM3CR3JR>" href="#">Matthew</a>
+                </div>
+              </div>
+            </div>
+            <div class="col pl-0 pr-0">
+
+              <button class="post btn btn-primary float-right ">
+                post
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <textarea id="input" class="form-control"></textarea>
+        <button class="post btn btn-primary mb-2 mt-2">
+          post
+        </button>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>

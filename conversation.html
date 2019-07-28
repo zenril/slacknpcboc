@@ -130,10 +130,10 @@
       $('#renderer').on('click', '.card' ,function () {
         var data = $(this).data('model');
         if(data){
-          $("#name").val(data.data.username);
           var t = data.data.icon_emoji.substr(1,data.data.icon_emoji.length - 2);
           $('.insertemoji').val(t);
           $('.insertemoji').trigger("change");
+          $("#name").val(data.data.username);
         }
       });
 
